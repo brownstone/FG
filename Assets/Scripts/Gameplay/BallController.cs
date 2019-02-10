@@ -28,7 +28,7 @@ public class BallController : MonoBehaviour {
         {
             if (!IsVisible)
             {
-                if (transform.position.y < 30.0f)
+                if (transform.position.y < 40.0f)
                 {
                     IsVisible = true;
                 }
@@ -42,7 +42,6 @@ public class BallController : MonoBehaviour {
                 transform.position = pos;
             }
 
-            Debug.Log(transform.position);
         }
 
         if (transform.position.y < -40.0f)
@@ -153,7 +152,7 @@ public class BallController : MonoBehaviour {
     {
         if (collision.CompareTag("Bullet"))
         {
-            if (_enemyType == EnemyType.PLANET)
+            if (_enemyType == EnemyType.PLANET || _enemyType == EnemyType.SATELLITE)
             {
                 if (int.Parse(numberText.text) == 1)
                 {

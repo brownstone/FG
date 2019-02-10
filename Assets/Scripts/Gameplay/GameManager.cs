@@ -21,6 +21,7 @@ public enum ItemType
     MISSILE,
     BOMB,
     LASER,
+    ASTRONAUT,
 }
 
 public enum BoostUpType
@@ -95,8 +96,7 @@ public class GameManager : MonoBehaviour {
 
 
     [Header("Gameplay References")]
-    [SerializeField]
-    private GameObject ballPrefab;
+    [SerializeField] private GameObject ballPrefab;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private GameObject bulletExplodePrefab;
     [SerializeField] private GameObject ballExplodeParticlePrefab;

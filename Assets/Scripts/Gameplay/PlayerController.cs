@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour {
     public static PlayerController Instance { private set; get; }
     public static event System.Action<PlayerState> PlayerStateChanged = delegate { };
 
+    private List<AstronautController> _listAstronautControl = new List<AstronautController>();
+
     public PlayerState PlayerState
     {
         get
@@ -50,6 +52,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private GameObject rightGun = null;
 
+    [SerializeField]
+    private GameObject _astronautPrefab;
+
     private SpriteRenderer spRender = null;
     private PolygonCollider2D polyCollider = null;
     private SpriteRenderer centerGunRender = null;
@@ -58,6 +63,8 @@ public class PlayerController : MonoBehaviour {
     private float limitRight = 0;
     private int gunCount = 1;
     private bool allowMove = false;
+
+    private int _astronautCount = 0;
 
     private int HP = 10;
 
@@ -162,6 +169,37 @@ public class PlayerController : MonoBehaviour {
                 }
                 firstPos = currentPos;
             }
+
+
+            UpdateAstronauts();
+        }
+    }
+
+    private void UpdateAstronauts()
+    {
+
+        Vector3 pos = transform.position;
+        pos.y -= 1.0f;
+
+        foreach (AstronautController o in _listAstronautControl)
+        {
+            if (!o.gameObject.activeInHierarchy)
+                continue;
+
+            Vector3 target = pos;
+            target.y -= 3.0f;
+
+            Vector3 src = o.gameObject.transform.position;
+            //Vector3 mid = (target + src) * 0.3f;
+
+            float len = (target - src).sqrMagnitude;
+            if (len > 0.15f)
+                len = 0.15f;
+
+            src = src + ((target - src) * len);
+
+            o.gameObject.transform.position = src;
+            pos = o.gameObject.transform.position;
         }
     }
 
@@ -209,6 +247,9 @@ public class PlayerController : MonoBehaviour {
         leftGun.SetActive(true);
         rightGun.SetActive(true);
 
+
+
+
         StartCoroutine(FireBullets());
     }
 
@@ -241,6 +282,14 @@ public class PlayerController : MonoBehaviour {
                 //        StartCoroutine(SetGuncount());
                 //}
             }
+            if (itemControl.itemType == ItemType.ASTRONAUT)
+            {
+                if (_astronautCount < 30)
+                {
+                    //_astronautCount++;
+                    AddAstronaut();
+                }
+            }
         }
         else if (collision.CompareTag("Ball"))
         {
@@ -268,6 +317,35 @@ public class PlayerController : MonoBehaviour {
             yield return new WaitForSeconds(GameManager.Instance.doubleGunsTime);
         }
         gunCount = 1;
+    }
+
+    private void AddAstronaut()
+    {
+        Vector3 astronautPos = transform.position;
+        astronautPos.y -= 3.0f;
+        {
+            AstronautController astronautControl = Instantiate(_astronautPrefab, astronautPos, Quaternion.identity).GetComponent<AstronautController>();
+            astronautControl._astronautIndex = _listAstronautControl.Count;
+            _listAstronautControl.Add(astronautControl);
+            astronautControl.gameObject.SetActive(true);
+        }
+    }
+
+    public void CutAstronaut(int astronautIndex)
+    {
+        int count = _listAstronautControl.Count - astronautIndex;
+
+        foreach (AstronautController o in _listAstronautControl.GetRange(astronautIndex, count))
+        {
+            if (!o.gameObject.activeInHierarchy)
+                continue;
+
+            o.DestroyObject();
+
+        }
+
+        _listAstronautControl.RemoveRange(astronautIndex, count);
+
     }
 
 

@@ -80,5 +80,9 @@ public class ItemsManager : MonoBehaviour
         PlayerPrefs.SetInt(PPK_LASER, value);
     }
 
+    public void AddAstronaut(int amount)
+    {
+        Debug.Log("Astronaut");
+    }
 
 }

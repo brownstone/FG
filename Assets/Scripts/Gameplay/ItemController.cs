@@ -48,6 +48,8 @@ public class ItemController : MonoBehaviour {
     {
         if (collision.CompareTag("Player"))
         {
+
+            Debug.Log("Coll with player");
             SoundManager.Instance.PlaySound(SoundManager.Instance.item);
             if (itemType == ItemType.COIN)
             {
@@ -62,6 +64,8 @@ public class ItemController : MonoBehaviour {
                 ItemsManager.Instance.AddLaser(1);
             else if (itemType == ItemType.MISSILE)
                 ItemsManager.Instance.AddMissile(1);
+            //else if (itemType == ItemType.ASTRONAUT)
+            //    GameManager.Instance.AddAstronaut(1);
             gameObject.SetActive(false);
         }
     }
